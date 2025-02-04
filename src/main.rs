@@ -1,7 +1,7 @@
 mod menu;
 use scraper::{Html, Selector};
-use reqwest;
-
+use reqwest::{self, RequestBuilder};
+use chrono;
 
 fn main() {
     println!("Today is a good day to get fat on campus:");
@@ -11,18 +11,42 @@ fn main() {
 
 fn get_menu_mensa() -> Result<menu::Menu, Box<dyn std::error::Error>> {
     let mut menu = menu::Menu::new("Uni Mensa".to_string());
-    let url = "https://www.stw-bremen.de/de/mensa/uni-mensa";
-    let body = reqwest::blocking::get(url)?.text()?;
-    let document = Html::parse_document(&body);
-    let selector = Selector::parse(".view-dom-id-1571de99bb5b3a18eee33f35c2dac288 > table:nth-child(2) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2)").unwrap();
-    for element in document.select(&selector) {
-        let name = element.text().collect::<Vec<_>>().join(" ");
-        let price = element.value().attr("data-price").unwrap();
-        let food = menu::Food {
-            name,
-            price: price.to_string(),
-        };
-        menu.add_food(food);
+    let url = "https://content.stw-bremen.de/api/kql";
+    let date_today = chrono::Local::now().format("%Y-%m-%d").to_string(); 
+    let client = reqwest::blocking::Client::new();
+    let mut req = client.post(url);
+    req = req.bearer_auth("SiERWGuZbj/Ud0AqSp21cDX/GIUJqnKG!MgkW-Zg7QzCO0NT1YjkO-N1Bc1aUssM");
+    req = req.json(&serde_json::json!({
+        "query": format!("page(\'meals\').children.filterBy(\'location\', \'300\').filterBy(\'date\', \'{date_today}\')"),
+        "select":{
+            "title":true,
+            "ingredients":"page.ingredients.toObject",
+            "prices":"page.prices.toObject",
+            "counter":true,
+            "date":true,
+            "mealadds":true,
+            "mark":true,
+            "kombicategory":true,
+            "categories":"page.categories.split"
+        }
+    }));
+    let res = req.send()?;
+    // parse JSON body
+    if res.status() != 200 {
+        println!("Error: {}", res.status());
+        return Ok(menu);
     }
+    let body = &res.json::<serde_json::Value>()?["result"];
+    let meals = body.as_array().unwrap();
+    for meal_json in meals {
+        let meal = meal_json.as_object().unwrap();
+
+        let menu_entry = menu::Food {
+            name: meal["title"].as_str().unwrap().to_string(),
+            price: meal["prices"][2]["price"].as_str().unwrap().trim().to_string(),
+        };
+        menu.add_food(menu_entry);
+    }
+    //let meals = body["result"].as_array().unwrap();
     Ok(menu)
 }
