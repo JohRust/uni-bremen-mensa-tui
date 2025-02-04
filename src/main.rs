@@ -1,6 +1,5 @@
 mod menu;
-use scraper::{Html, Selector};
-use reqwest::{self, RequestBuilder};
+use reqwest::{self};
 use chrono;
 
 fn main() {
@@ -41,8 +40,10 @@ fn get_menu_mensa() -> Result<menu::Menu, Box<dyn std::error::Error>> {
     for meal_json in meals {
         let meal = meal_json.as_object().unwrap();
 
+        let meal_title = meal["title"].as_str().unwrap();
+        let meal_counter = meal["counter"].as_str().unwrap();
         let menu_entry = menu::Food {
-            name: meal["title"].as_str().unwrap().to_string(),
+            name: format!("{meal_counter}: {meal_title}"),
             price: meal["prices"][2]["price"].as_str().unwrap().trim().to_string(),
         };
         menu.add_food(menu_entry);
