@@ -14,6 +14,7 @@ fn get_menu_mensa() -> Result<menu::Menu, Box<dyn std::error::Error>> {
     let date_today = chrono::Local::now().format("%Y-%m-%d").to_string(); 
     let client = reqwest::blocking::Client::new();
     let mut req = client.post(url);
+    // This token is from the official website and does not need to be kept secret.
     req = req.bearer_auth("SiERWGuZbj/Ud0AqSp21cDX/GIUJqnKG!MgkW-Zg7QzCO0NT1YjkO-N1Bc1aUssM");
     req = req.json(&serde_json::json!({
         "query": format!("page(\'meals\').children.filterBy(\'location\', \'300\').filterBy(\'date\', \'{date_today}\')"),

@@ -1,0 +1,4 @@
+# Marterials
+This folder contains stuff that might be helpful for development, but is not part of the application.
+`res.json` contains a typical response from the server when sending a query for a menu.
+`queries` shows a curl command and an example body of a GET request to the server.
