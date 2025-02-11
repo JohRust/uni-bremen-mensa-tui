@@ -3,7 +3,7 @@ use reqwest::{self};
 use chrono;
 
 fn main() {
-    println!("Today is a good day to get fat on campus:");
+    println!("Today is a good day to get fat on campus!\n");
     let menu = get_menu_mensa().unwrap();
     menu.print();
 }
@@ -49,6 +49,6 @@ fn get_menu_mensa() -> Result<menu::Menu, Box<dyn std::error::Error>> {
         };
         menu.add_food(menu_entry);
     }
-    //let meals = body["result"].as_array().unwrap();
+    menu.sort();
     Ok(menu)
 }

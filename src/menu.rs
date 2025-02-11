@@ -28,9 +28,13 @@ impl Menu {
 
     /// Print the menu to the console.
     pub fn print(&self) {
-        println!("{}", self.name);
+        println!("{}:", self.name);
         for food in &self.foods {
             println!("{}: {}", food.name, food.price);
         }
+    }
+
+    pub fn sort(&mut self) {
+        self.foods.sort_by(|a, b| a.name.cmp(&b.name));
     }
 }
