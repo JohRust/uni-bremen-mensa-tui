@@ -1,23 +1,36 @@
 mod menu;
 use reqwest::{self};
 use chrono;
+use clap::Parser;
+
+#[derive(Parser)]
+#[command(version)]
+struct Cli {
+    #[arg(short, long, default_value = "0")]
+     price_category: usize,
+    #[arg(short, long, default_value = "0")]
+     day_offset: i64,
+}
 
 fn main() {
+    let args = Cli::parse();
+
     println!("Today is a good day to get fat on campus!\n");
-    let menu = get_menu_mensa().unwrap();
+    let menu = get_menu_mensa(args.day_offset, args.price_category).unwrap();
     menu.print();
 }
 
-fn get_menu_mensa() -> Result<menu::Menu, Box<dyn std::error::Error>> {
+fn get_menu_mensa(day_offset: i64, price_category: usize) -> Result<menu::Menu, Box<dyn std::error::Error>> {
     let mut menu = menu::Menu::new("Uni Mensa".to_string());
     let url = "https://content.stw-bremen.de/api/kql";
-    let date_today = chrono::Local::now().format("%Y-%m-%d").to_string(); 
+    let date_today = chrono::Local::now() + chrono::Duration::days(day_offset);
+    let target_day_str = date_today.format("%Y-%m-%d").to_string(); 
     let client = reqwest::blocking::Client::new();
     let mut req = client.post(url);
     // This token is from the official website and does not need to be kept secret.
     req = req.bearer_auth("SiERWGuZbj/Ud0AqSp21cDX/GIUJqnKG!MgkW-Zg7QzCO0NT1YjkO-N1Bc1aUssM");
     req = req.json(&serde_json::json!({
-        "query": format!("page(\'meals\').children.filterBy(\'location\', \'300\').filterBy(\'date\', \'{date_today}\')"),
+        "query": format!("page(\'meals\').children.filterBy(\'location\', \'300\').filterBy(\'date\', \'{target_day_str}\')"),
         "select":{
             "title":true,
             "ingredients":"page.ingredients.toObject",
@@ -45,7 +58,7 @@ fn get_menu_mensa() -> Result<menu::Menu, Box<dyn std::error::Error>> {
         let meal_counter = meal["counter"].as_str().unwrap();
         let menu_entry = menu::Food {
             name: format!("{meal_counter}: {meal_title}"),
-            price: meal["prices"][2]["price"].as_str().unwrap().trim().to_string(),
+            price: meal["prices"][price_category]["price"].as_str().unwrap().trim().to_string(),
         };
         menu.add_food(menu_entry);
     }
