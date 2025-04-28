@@ -28,7 +28,7 @@ impl Menu {
 
     /// Print the menu to the console.
     pub fn print(&self) {
-        println!("{}:", self.name);
+        println!("\n=== {} ===", self.name);
         for food in &self.foods {
             println!("{}: {}", food.name, food.price);
         }
