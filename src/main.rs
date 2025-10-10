@@ -78,6 +78,5 @@ fn get_menu_studentenwerk(location: &str, day_offset: i64, price_category: usize
         };
         menu.add_food(menu_entry);
     }
-    menu.sort();
     Ok(menu)
 }
