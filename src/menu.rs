@@ -12,12 +12,16 @@ pub struct Meal {
     pub counter: String
 }
 
+/// A counter with a name and a list of meals.
 pub struct Counter {
     pub name: String,
     pub meals: Vec<Meal>,
 }
 
-/// A menu with a name and a list of meals.
+/// A menu with a name and a list of counters.
+/// Each Menu corresponds to a location (Mensa or GW2).
+/// Each Counter corresponds to a counter in the Mensa (e.g. "Ausgabe 1").
+/// Each Meal corresponds to a meal served at that counter.
 pub struct Menu {
     name: String,
     counters: Vec<Counter>,
@@ -50,7 +54,7 @@ impl Menu {
         let counter = meal.counter.clone();
         if let Some(cat) = self.counters.iter_mut().find(|c| c.name == counter) {
             cat.meals.push(meal);
-        } else {
+        } else { // counter does not exist yet
             let meals = vec![meal];
             self.counters.push(Counter { name: counter, meals });
         }
@@ -59,11 +63,13 @@ impl Menu {
     /// Print the menu to the console.
     pub fn print(&self) {
         println!("\n=== {} ===", self.name);
+        // First print the counters listed the custom order, then the rest
         for cat_name in CUSTOM_ORDER {
             if let Some(cat) = self.counters.iter().find(|c| c.name == cat_name) {
                 cat.print();
             }
         }
+        // Print the rest
         for cat in &self.counters {
             if !CUSTOM_ORDER.contains(&cat.name.as_str()) {
                 cat.print();
