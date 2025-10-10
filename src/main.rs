@@ -72,11 +72,12 @@ fn get_menu_studentenwerk(location: &str, day_offset: i64, price_category: usize
 
         let meal_title = meal["title"].as_str().unwrap();
         let meal_counter = meal["counter"].as_str().unwrap();
-        let menu_entry = menu::Food {
-            name: format!("{meal_counter}: {meal_title}"),
+        let menu_entry = menu::Meal {
+            name: meal_title.trim().to_string(),
             price: meal["prices"][price_category]["price"].as_str().unwrap().trim().to_string(),
+            counter: meal_counter.to_string(),
         };
-        menu.add_food(menu_entry);
+        menu.add_meal(menu_entry);
     }
     Ok(menu)
 }
