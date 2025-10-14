@@ -5,11 +5,17 @@ static CUSTOM_ORDER: [&str; 4] = [
     "Auflauf/Gratin",
 ];
 
+pub struct MealAttributes {
+    pub vegan: bool,
+    pub vegetarian: bool
+}
+
 /// A meal with a name and a price.
 pub struct Meal {
     pub name: String,
     pub price: String,
-    pub counter: String
+    pub counter: String,
+    pub attributes: MealAttributes,
 }
 
 /// A counter with a name and a list of meals.
@@ -27,13 +33,33 @@ pub struct Menu {
     counters: Vec<Counter>,
 }
 
+impl MealAttributes {
+    pub fn from_mealadds(mealadds: &str) -> MealAttributes {
+        let vegan = mealadds.contains("VG");
+        let vegetarian = vegan || mealadds.contains("VT");
+        MealAttributes { vegan, vegetarian }
+    }
+}
+
+impl Meal {
+    pub fn print(&self) {
+        let attr = if self.attributes.vegan {
+            " 🌱"
+        } else if self.attributes.vegetarian {
+            " 🥛🥚"
+        } else {
+            ""
+        };
+        println!("   {} - {}{}", self.name, self.price, attr);
+    }
+}
 
 impl Counter {
     /// Create a new counter with a given name.
     pub fn print(&self) {
         println!("{}", self.name);
         for meal in &self.meals {
-            println!("   {} - {}", meal.name, meal.price);
+            meal.print();
         }
     }
 }

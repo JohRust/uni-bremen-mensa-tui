@@ -76,6 +76,7 @@ fn get_menu_studentenwerk(location: &str, day_offset: i64, price_category: usize
             name: meal_title.trim().to_string(),
             price: meal["prices"][price_category]["price"].as_str().unwrap().trim().to_string(),
             counter: meal_counter.to_string(),
+            attributes: menu::MealAttributes::from_mealadds(meal["mealadds"].as_str().unwrap_or(""))
         };
         menu.add_meal(menu_entry);
     }
