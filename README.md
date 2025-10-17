@@ -18,28 +18,51 @@ alias essen=<PATH_TO_REPOSITORY>/target/debug/uni-bremen-mensa-tui
 After that you can run "essen" (you can of course give the alias whatever name you prefer)
 ```
 > essen
-Today is a good day to get fat on campus:
-Uni Mensa
-KombinierBar: Kürbisgemüse: 1.55
-KombinierBar: Hausgemachte Bio-Pasta: 2.05
-KombinierBar: Twister: 2.05
-KombinierBar: Bratkartoffeln: 2.05
-KombinierBar: Mandelrosenkohl: 1.55
-KombinierBar: Sommergemüse: 1.55
-KombinierBar: Geflügelbälle "Chili Cheese": 3.65
-KombinierBar: 7 Gemüsenuggets: 4.90
-KombinierBar: Panierter Hirtenkäse: 2.80
-Ausgabe 1: Mini-Knödel, Schmorzwiebeln, Rustica Carrots, Salat, Ceasars-Dressing: 5.75
-Ausgabe 2: Hühnersuppe, Fadennudeln: 5.10
-Ausgabe 3: Cannelloni "Verdi", Mediterranes Gemüse, Tomatensauce, Rucola: 6.20
-PastaWerk: Hausgemachte Bio-Pasta, Veganes Hack mit Tex-Mex-Gemüse, Käsesauce: 5.90
-PastaWerk: Hausgemachte Bio-Pasta, Veganes Hack mit Tex-Mex-Gemüse, Petersilien-Limetten-Pesto: 5.90
-KombinierBar: Gefüllte Paprikaschote, Gemüsepfanne "Mexiko", Reis: 2.80
+Today is a good day to get fat on campus!
+
+=== Mensa ===
+Ausgabe 1
+   Kabeljau-Tails Rote Bete-Panade, Kartoffelsalat, Aioli - 6.05
+Ausgabe 2
+   Veganes Chili, Orangen-Reis, Avocado-Dip - 5.00 🌱
+Ausgabe 3
+   Käsespätzle, Röstzwiebeln, Salatmix, Chefkoch-Dressing - 6.20 🥛🥚
+Saucen/Dips
+   Sauce Bernaise - 1.40 🥛🥚
+   "All Arrabiata" - 0.70 🌱
+KombinierBar
+   Rote Beete Puffer - 2.80 🌱
+   Hähnchenschenkel - 3.65
+   Grillkäse - 2.80 🥛🥚
+   Kürbisgemüse - 1.55 🌱
+   Criss Cuts - 2.05 🌱
+   Spätzle - 1.55 🥛🥚
+   Orangen-Reis - 1.55 🌱
+   Bunte Möhren - 1.55 🌱
+   Brokkoli - 1.55 🌱
+Dessert
+   Panna Cotta, Schlagcreme, Mango - 2.25 🌱
+   Quarkspeise, Erdbeeren - 1.70 🥛🥚
+   Mandelpudding, Sahnetupfer, Himbeeren - 2.25 🥛🥚
+   Creme Tiramisu, Topping Rhabarber, Sahnetupfer - 2.55
+   Zitronenpudding, Topping Karamell - 2.25 🌱
+   Melone - 2.55 🌱
+   Mousse au Chocolat, Sahnetupfer - 2.55
+
+=== GW2 ===
+Pizza
+   Türkische Pizza, Veganer Tzatziki - 5.50 🌱
+   Türkische Pizza, Tzatziki - 5.50 🥛🥚
+Snacks
+   Veganer Rollo nach Tex Mex-Art - 4.90 🌱
+Bowl
+   One Pot: Hähnchen mit Reisnudeln - 6.75
+
 ```
 
 
 # Current Features
-Currently it only lists the food in the Central Mensa. I might add other locations later. Feel free to extend it yourself and send me a pull request!
+Currently it only lists the food in the Central Mensa and GW2. I might add other locations later. Feel free to extend it yourself and send me a pull request!
 
 # One more thing
 Please be mindful when using this application and the requests it sends to the KQL database. Sending many invalid requests or accidentally flooding the server with requests by putting them in a loop could annoy the developers of the database server and make them restrict public access.
