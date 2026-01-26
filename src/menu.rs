@@ -1,8 +1,9 @@
-static CUSTOM_ORDER: [&str; 4] = [
+static CUSTOM_ORDER: [&str; 5] = [
     "Ausgabe 1",
     "Ausgabe 2",
     "Ausgabe 3",
     "Auflauf/Gratin",
+    "PastaWerk"
 ];
 
 pub struct MealAttributes {
