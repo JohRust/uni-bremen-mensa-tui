@@ -11,9 +11,13 @@ cd uni-bremen-mensa-tui
 ```sh
 cargo build
 ```
-Then put the binary `target/debug/uni-bremen-mensa-tui` somewhere on your PATH. You can simply copy it to `/usr/bin` or just create an alias in your `~/.bashrc` (or `~/.zshrc`, etc.) like this:
+Then do one of these three options:
+ - Option 1 (recommended): run `cargo install --path .` to install `uni-bremen-mensa-tui` to the default install folder (Usually `~/.cargo/bin`)
+ - Option 2: Run `cargo build` and manually put the binary `target/debug/uni-bremen-mensa-tui` somewhere on your PATH, e.g. `/usr/bin`
+
+To make access easier, create an alias in your `~/.bashrc` (or `~/.zshrc`, etc.) and add the price category (`-p 0` for student, `-p 1` employee, `-p 2` external)
 ```sh
-alias essen=<PATH_TO_REPOSITORY>/target/debug/uni-bremen-mensa-tui
+alias essen="uni-bremen-mensa-tui -p 2"
 ```
 After that you can run "essen" (you can of course give the alias whatever name you prefer)
 ```
@@ -59,10 +63,10 @@ Bowl
    One Pot: Hähnchen mit Reisnudeln - 6.75
 
 ```
-
+Add `-d <#days>` to see the menu for in `#days` days.
 
 # Current Features
 Currently it only lists the food in the Central Mensa and GW2. I might add other locations later. Feel free to extend it yourself and send me a pull request!
 
 # One more thing
-Please be mindful when using this application and the requests it sends to the KQL database. Sending many invalid requests or accidentally flooding the server with requests by putting them in a loop could annoy the developers of the database server and make them restrict public access.
+Please be mindful when using this application and the requests it sends to the KQL database. Sending many invalid requests or accidentally flooding the server with requests by putting them in a loop could annoy the maintainers of the database and make them restrict public access.
