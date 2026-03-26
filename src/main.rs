@@ -18,6 +18,8 @@ fn main() {
     println!("Today is a good day to get fat on campus!");
     let mensa_menu = get_menu_studentenwerk("Mensa", args.day_offset, args.price_category).unwrap();
     mensa_menu.print();
+    let cafe_central_menu = get_menu_studentenwerk("Cafe Central", args.day_offset, args.price_category).unwrap();
+    cafe_central_menu.print();
     let gw2_menu = get_menu_studentenwerk("GW2", args.day_offset, args.price_category).unwrap();
     gw2_menu.print();
 }
@@ -25,17 +27,17 @@ fn main() {
 /// Fetches the menu for the given location code and day offset.
 /// 
 /// # Arguments
-/// * `location` - The location code for the menu. Can be "Mensa" or "GW2".
+/// * `location` - The location code for the menu. Can be "Mensa", "GW2", or "Cafe Central".
 /// * `day_offset` - The number of days to offset from today.
 /// * `price_category` - The price category to fetch.
 /// 
 /// # Returns
 /// A `Result` containing the menu or an error.
 fn get_menu_studentenwerk(location: &str, day_offset: i64, price_category: usize) -> Result<menu::Menu, Box<dyn std::error::Error>> {
-    if location != "Mensa" && location != "GW2" {
+    if location != "Mensa" && location != "GW2" && location != "Cafe Central" {
         return Err("Invalid location code".into());
     }
-    let location_code = if location == "Mensa" { "300" } else { "340" };
+    let location_code = if location == "Mensa" { "300" } else if location == "GW2" { "340" } else { "3001" };
 
     let mut menu = menu::Menu::new(location.to_string());
     let url = "https://content.stw-bremen.de/api/kql";
