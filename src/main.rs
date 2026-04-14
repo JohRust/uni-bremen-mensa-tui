@@ -14,13 +14,13 @@ struct Cli {
 
 fn main() {
     let args = Cli::parse();
-
+    let client = reqwest::blocking::Client::new();
     println!("Today is a good day to get fat on campus!");
-    let mensa_menu = get_menu_studentenwerk("Mensa", args.day_offset, args.price_category).unwrap();
+    let mensa_menu = get_menu_studentenwerk(&client,"Mensa", args.day_offset, args.price_category).unwrap();
     mensa_menu.print();
-    let cafe_central_menu = get_menu_studentenwerk("Cafe Central", args.day_offset, args.price_category).unwrap();
+    let cafe_central_menu = get_menu_studentenwerk(&client,"Cafe Central", args.day_offset, args.price_category).unwrap();
     cafe_central_menu.print();
-    let gw2_menu = get_menu_studentenwerk("GW2", args.day_offset, args.price_category).unwrap();
+    let gw2_menu = get_menu_studentenwerk(&client,"GW2", args.day_offset, args.price_category).unwrap();
     gw2_menu.print();
 }
 
@@ -33,7 +33,7 @@ fn main() {
 /// 
 /// # Returns
 /// A `Result` containing the menu or an error.
-fn get_menu_studentenwerk(location: &str, day_offset: i64, price_category: usize) -> Result<menu::Menu, Box<dyn std::error::Error>> {
+fn get_menu_studentenwerk(client: &reqwest::blocking::Client, location: &str, day_offset: i64, price_category: usize) -> Result<menu::Menu, Box<dyn std::error::Error>> {
     if location != "Mensa" && location != "GW2" && location != "Cafe Central" {
         return Err("Invalid location code".into());
     }
@@ -43,7 +43,6 @@ fn get_menu_studentenwerk(location: &str, day_offset: i64, price_category: usize
     let url = "https://content.stw-bremen.de/api/kql";
     let date_today = chrono::Local::now() + chrono::Duration::days(day_offset);
     let target_day_str = date_today.format("%Y-%m-%d").to_string(); 
-    let client = reqwest::blocking::Client::new();
     let mut req = client.post(url);
     // This token is from the official website and does not need to be kept secret.
     req = req.bearer_auth("SiERWGuZbj/Ud0AqSp21cDX/GIUJqnKG!MgkW-Zg7QzCO0NT1YjkO-N1Bc1aUssM");
