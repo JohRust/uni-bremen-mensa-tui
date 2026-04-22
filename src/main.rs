@@ -12,16 +12,20 @@ struct Cli {
      day_offset: i64,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let args = Cli::parse();
-    let client = reqwest::blocking::Client::new();
+    let client = reqwest::Client::new();
     println!("Today is a good day to get fat on campus!");
-    let mensa_menu = get_menu_studentenwerk(&client,"Mensa", args.day_offset, args.price_category).unwrap();
-    mensa_menu.print();
-    let cafe_central_menu = get_menu_studentenwerk(&client,"Cafe Central", args.day_offset, args.price_category).unwrap();
-    cafe_central_menu.print();
-    let gw2_menu = get_menu_studentenwerk(&client,"GW2", args.day_offset, args.price_category).unwrap();
-    gw2_menu.print();
+    let (mensa_menu, cafe_central_menu, gw2_menu) = tokio::join!(
+        get_menu_studentenwerk(&client, "Mensa", args.day_offset, args.price_category),
+        get_menu_studentenwerk(&client, "Cafe Central", args.day_offset, args.price_category),
+        get_menu_studentenwerk(&client, "GW2", args.day_offset, args.price_category),
+    );
+
+    mensa_menu.unwrap().print();
+    cafe_central_menu.unwrap().print();
+    gw2_menu.unwrap().print();
 }
 
 /// Fetches the menu for the given location code and day offset.
@@ -33,7 +37,7 @@ fn main() {
 /// 
 /// # Returns
 /// A `Result` containing the menu or an error.
-fn get_menu_studentenwerk(client: &reqwest::blocking::Client, location: &str, day_offset: i64, price_category: usize) -> Result<menu::Menu, Box<dyn std::error::Error>> {
+async fn get_menu_studentenwerk(client: &reqwest::Client, location: &str, day_offset: i64, price_category: usize) -> Result<menu::Menu, Box<dyn std::error::Error>> {
     if location != "Mensa" && location != "GW2" && location != "Cafe Central" {
         return Err("Invalid location code".into());
     }
@@ -60,13 +64,13 @@ fn get_menu_studentenwerk(client: &reqwest::blocking::Client, location: &str, da
             "categories":"page.categories.split"
         }
     }));
-    let res = req.send()?;
+    let res = req.send().await?;
     // parse JSON body
     if res.status() != 200 {
         println!("Error: {}", res.status());
         return Ok(menu);
     }
-    let body = &res.json::<serde_json::Value>()?["result"];
+    let body = &res.json::<serde_json::Value>().await?["result"];
     let meals = body.as_array().unwrap();
     for meal_json in meals {
         let meal = meal_json.as_object().unwrap();
