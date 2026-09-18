@@ -17,6 +17,7 @@ async fn main() {
     let args = Cli::parse();
     let client = reqwest::Client::new();
     println!("Today is a good day to get fat on campus!");
+    println!("Menu for {}", print_day_str(args.day_offset));
     let (mensa_menu, cafe_central_menu, gw2_menu) = tokio::join!(
         get_menu_studentenwerk(&client, "Mensa", args.day_offset, args.price_category),
         get_menu_studentenwerk(&client, "Cafe Central", args.day_offset, args.price_category),
@@ -26,6 +27,12 @@ async fn main() {
     mensa_menu.unwrap().print();
     cafe_central_menu.unwrap().print();
     gw2_menu.unwrap().print();
+}
+
+fn print_day_str(day_offset: i64) -> String {
+    let date_today = chrono::Local::now() + chrono::Duration::days(day_offset);
+    // Return the day of week along with the full date
+    date_today.format("%A, %Y-%m-%d").to_string()
 }
 
 /// Fetches the menu for the given location code and day offset.
