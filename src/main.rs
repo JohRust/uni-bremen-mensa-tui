@@ -51,27 +51,28 @@ async fn get_menu_studentenwerk(client: &reqwest::Client, location: &str, day_of
     let location_code = if location == "Mensa" { "300" } else if location == "GW2" { "340" } else { "3001" };
 
     let mut menu = menu::Menu::new(location.to_string());
-    let url = "https://content.stw-bremen.de/api/kql";
+    let url = "https://content.stw-bremen.de/api/kqlnocache";
     let date_today = chrono::Local::now() + chrono::Duration::days(day_offset);
     let target_day_str = date_today.format("%Y-%m-%d").to_string(); 
-    let mut req = client.post(url);
-    // This token is from the official website and does not need to be kept secret.
-    req = req.bearer_auth("SiERWGuZbj/Ud0AqSp21cDX/GIUJqnKG!MgkW-Zg7QzCO0NT1YjkO-N1Bc1aUssM");
-    req = req.json(&serde_json::json!({
-        "query": format!("page(\'meals\').children.filterBy(\'location\', \'{location_code}\').filterBy(\'date\', \'{target_day_str}\')"),
-        "select":{
-            "title":true,
-            "ingredients":"page.ingredients.toObject",
-            "prices":"page.prices.toObject",
-            "counter":true,
-            "date":true,
-            "mealadds":true,
-            "mark":true,
-            "kombicategory":true,
-            "categories":"page.categories.split"
-        }
-    }));
-    let res = req.send().await?;
+    let request_body = serde_json::json!({
+        "action": "meals",
+        "location": location_code,
+        "date": target_day_str,
+    });
+    let request = client
+        .post(url)
+        .header(reqwest::header::USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:156.0) Gecko/20100101 Firefox/156.0")
+        .header(reqwest::header::ACCEPT, "*/*")
+        .header(reqwest::header::ACCEPT_LANGUAGE, "de,en-US;q=0.9,en;q=0.8")
+        .header(reqwest::header::REFERER, "https://www.stw-bremen.de/")
+        .header(reqwest::header::CONTENT_TYPE, "application/json")
+        .header("X-Language", "de")
+        .header(reqwest::header::ORIGIN, "https://www.stw-bremen.de")
+        .bearer_auth("1c4792d057ee90f4cd30c9720292f82989b07003f49424638f575efafd2379e9")
+        .json(&request_body)
+        .build()?;
+
+    let res = client.execute(request).await?;
     // parse JSON body
     if res.status() != 200 {
         println!("Error: {}", res.status());
