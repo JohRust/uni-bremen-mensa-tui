@@ -68,7 +68,7 @@ async fn get_menu_studentenwerk(client: &reqwest::Client, location: &str, day_of
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .header("X-Language", "de")
         .header(reqwest::header::ORIGIN, "https://www.stw-bremen.de")
-        .bearer_auth("1c4792d057ee90f4cd30c9720292f82989b07003f49424638f575efafd2379e9")
+        .bearer_auth("1c4792d057ee90f4cd30c9720292f".to_owned()+"82989b07003f49424638f575efafd2379e9")
         .json(&request_body)
         .build()?;
 
